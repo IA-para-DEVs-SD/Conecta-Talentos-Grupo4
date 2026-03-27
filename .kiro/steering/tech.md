@@ -99,10 +99,32 @@ mypy backend/src
 
 ## Configuration
 
-Environment variables are managed via `.env` file (see `.env.example` for template):
+Environment variables are managed via `.env` file (see `backend/.env.example` for template):
 - `OPENAI_API_KEY` - OpenAI API key for LLM
 - `OPENAI_MODEL` - Model to use (gpt-4o-mini recommended)
 - `DATABASE_URL` - SQLite database path
 - `UPLOAD_DIR` - Directory for uploaded PDFs
 - `MAX_FILE_SIZE_MB` - Maximum PDF file size
 - `MAX_PDF_PAGES` - Maximum pages per PDF (default: 10)
+
+## Git Configuration
+
+### Branch Strategy (Gitflow)
+- `main` - Production branch (stable releases)
+- `develop` - Development branch (integration)
+- `feature/*` - Feature branches (created from develop)
+
+### Current Branch
+- `feature/padronizacao-projeto` - Project standardization
+
+### Commit Convention
+Follow semantic commits (Conventional Commits):
+- `feat:` - New features
+- `fix:` - Bug fixes
+- `docs:` - Documentation changes
+- `refactor:` - Code refactoring
+- `test:` - Test additions/changes
+- `style:` - Code formatting
+- `chore:` - Maintenance tasks
+
+Example: `feat: adiciona extração de PDF`

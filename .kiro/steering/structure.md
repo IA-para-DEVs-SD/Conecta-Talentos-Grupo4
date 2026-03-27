@@ -4,23 +4,49 @@
 
 ```
 conecta-talentos/
+├── .git/                       # Git repository data
+├── .github/                    # GitHub configuration
+│   ├── CONTRIBUTING.md         # Contribution guidelines
+│   └── PADROES.md             # Project standards and conventions
+│
 ├── .kiro/                      # Kiro configuration and specs
 │   ├── specs/                  # Feature specifications
 │   │   └── conecta-talentos/   # Main project spec
+│   │       ├── .config.kiro    # Spec configuration
+│   │       ├── requirements.md # Requirements document
+│   │       ├── design.md       # Design document
+│   │       └── tasks.md        # Task tracking
 │   └── steering/               # AI assistant guidance rules
+│       ├── product.md          # Product overview
+│       ├── tech.md             # Technology stack
+│       ├── structure.md        # Project structure (this file)
+│       └── prompts.md          # Prompt history
+│
+├── .vscode/                    # VS Code configuration
+│   └── settings.json           # Editor settings
 │
 ├── backend/                    # Backend application
 │   ├── docs/                   # Technical documentation
+│   │   ├── base-implementacao.md      # Implementation guide
+│   │   ├── classe-extrator-pdf.md     # ExtratorPDF documentation
+│   │   └── como-usar-extrator.md      # Usage guide
 │   ├── src/                    # Source code
 │   │   └── services/           # Business logic and processors
+│   │       ├── extrator_pdf.py        # PDF extraction class
+│   │       ├── exemplo_uso_extrator.py # Usage examples
+│   │       └── pdf_to_text.py         # Legacy function
 │   ├── tests/                  # Test files
-│   ├── requirements-basico.txt # Python dependencies
-│   └── .env.example            # Environment variables template
+│   │   └── .gitkeep            # Keep empty directory
+│   ├── .env.example            # Environment variables template
+│   └── requirements-basico.txt # Python dependencies
 │
 ├── scripts/                    # Utility scripts
-│   ├── create-github-issues.*  # GitHub issue creation scripts
-│   └── github-tasks.md         # Task definitions for GitHub
+│   ├── create-github-issues.sh # Bash script for issues
+│   ├── create-github-issues.ps1 # PowerShell script for issues
+│   ├── github-tasks.md         # Task definitions
+│   └── README.md               # Scripts documentation
 │
+├── .gitignore                  # Git ignore rules
 └── README.md                   # Project documentation
 ```
 
@@ -74,17 +100,52 @@ app/
 ## Current Implementation Status
 
 ### Implemented
-- `backend/src/services/extrator_pdf.py` - PDF text extraction with PyMuPDF
-- `backend/src/services/exemplo_uso_extrator.py` - Usage example
-- `backend/docs/` - Technical documentation for PDF extractor
+- **PDF Extraction Module** (`backend/src/services/`)
+  - `extrator_pdf.py` - Complete PDF text extraction with PyMuPDF
+  - `exemplo_uso_extrator.py` - Usage examples and demonstrations
+  - `pdf_to_text.py` - Legacy PDF extraction function
+  
+- **Documentation** (`backend/docs/`)
+  - `classe-extrator-pdf.md` - Complete technical documentation
+  - `como-usar-extrator.md` - Usage guide with examples
+  - `base-implementacao.md` - Implementation guidelines (1059 lines)
+
+- **Project Configuration**
+  - `.gitignore` - Comprehensive ignore rules for Python, IDEs, OS files
+  - `.env.example` - Environment variables template
+  - `requirements-basico.txt` - Basic dependencies (PyMuPDF)
+  - `.vscode/settings.json` - VS Code configuration
+
+- **GitHub Configuration** (`.github/`)
+  - `CONTRIBUTING.md` - Contribution guidelines with Git workflow
+  - `PADROES.md` - Project standards and conventions
+  
+- **Kiro Configuration** (`.kiro/`)
+  - `specs/conecta-talentos/` - Feature specifications
+    - `.config.kiro` - Spec configuration (requirements-first workflow)
+    - `requirements.md` - Complete requirements document
+    - `design.md` - Design document (empty)
+    - `tasks.md` - Task tracking
+  - `steering/` - AI assistant guidance
+    - `product.md` - Product overview
+    - `tech.md` - Technology stack and commands
+    - `structure.md` - Project structure (this file)
+    - `prompts.md` - Prompt history and patterns
+
+- **Scripts** (`scripts/`)
+  - `create-github-issues.sh` - Bash script for issue creation
+  - `create-github-issues.ps1` - PowerShell script for issue creation
+  - `github-tasks.md` - Task definitions for GitHub
+  - `README.md` - Scripts documentation
 
 ### Pending
-- FastAPI application structure
+- FastAPI application structure (`app/` directory)
 - Database models and repositories
-- Anonymization with Presidio
-- LLM integration with OpenAI
-- Web interface
-- Complete test suite
+- Anonymization with Microsoft Presidio
+- LLM integration with OpenAI API
+- Web interface (Jinja2 templates + Bootstrap)
+- Complete test suite (pytest + hypothesis)
+- Frontend static assets (CSS/JS)
 
 ## Architectural Patterns
 
