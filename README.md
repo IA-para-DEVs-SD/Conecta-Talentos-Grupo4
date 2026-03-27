@@ -11,6 +11,7 @@ Sistema inteligente de ranqueamento de currículos que utiliza Inteligência Art
 - [Guia de Uso do ExtratorPDF](backend/docs/como-usar-extrator.md)
 - [Documentação Técnica](backend/docs/classe-extrator-pdf.md)
 - [Base de Implementação](backend/docs/base-implementacao.md)
+- [Diagrama UML — Fluxos do Sistema](diagramaUml.md)
 - [Padrões do Projeto](.github/PADROES.md)
 - [Guia de Contribuição](.github/CONTRIBUTING.md)
 
