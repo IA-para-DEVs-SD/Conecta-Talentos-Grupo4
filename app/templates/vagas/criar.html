@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Nova Vaga — ConectaTalentos{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <h2 class="mb-4">Nova Vaga</h2>
+
+        {% if erro %}
+        <div class="alert alert-danger" role="alert">{{ erro }}</div>
+        {% endif %}
+
+        <form method="post" action="/vagas/criar" novalidate>
+            <div class="mb-3">
+                <label for="titulo" class="form-label">Título da vaga <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="titulo" name="titulo" required
+                    placeholder="Ex: Desenvolvedor Python Sênior">
+                <div class="invalid-feedback">Informe o título da vaga.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="descricao" class="form-label">Descrição <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="descricao" name="descricao" rows="4" required
+                    placeholder="Descreva as responsabilidades e o contexto da vaga"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="requisitos_tecnicos" class="form-label">Requisitos técnicos <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="requisitos_tecnicos" name="requisitos_tecnicos" required
+                    placeholder="Ex: Python, FastAPI, SQLAlchemy (separados por vírgula)">
+                <div class="form-text">Separe os requisitos por vírgula.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="experiencia_minima" class="form-label">Experiência mínima <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="experiencia_minima" name="experiencia_minima" required
+                    placeholder="Ex: 3 anos">
+            </div>
+
+            <div class="mb-3">
+                <label for="competencias_desejadas" class="form-label">Competências desejadas <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="competencias_desejadas" name="competencias_desejadas" required
+                    placeholder="Ex: Trabalho em equipe, Comunicação (separadas por vírgula)">
+                <div class="form-text">Separe as competências por vírgula.</div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary" id="btn-salvar">
+                    <span class="spinner-border spinner-border-sm d-none me-1" id="spinner" role="status" aria-hidden="true"></span>
+                    Salvar vaga
+                </button>
+                <a href="/vagas" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Validação client-side + spinner no submit
+    document.querySelector('form').addEventListener('submit', function (e) {
+        if (!this.checkValidity()) {
+            e.preventDefault();
+            this.classList.add('was-validated');
+            return;
+        }
+        document.getElementById('spinner').classList.remove('d-none');
+        document.getElementById('btn-salvar').disabled = true;
+    });
+</script>
+{% endblock %}

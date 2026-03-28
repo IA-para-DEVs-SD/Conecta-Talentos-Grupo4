@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.config import get_settings
 from app.database import init_db
+from app.controllers import vaga_controller, curriculo_controller, ranking_controller
 
 settings = get_settings()
 
@@ -17,6 +18,11 @@ templates = Jinja2Templates(directory="app/templates")
 @app.on_event("startup")
 def startup_event() -> None:
     init_db()
+
+
+app.include_router(vaga_controller.router, prefix="/vagas", tags=["vagas"])
+app.include_router(curriculo_controller.router, prefix="/curriculos", tags=["curriculos"])
+app.include_router(ranking_controller.router, prefix="/ranking", tags=["ranking"])
 
 
 @app.get("/")
