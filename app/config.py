@@ -1,8 +1,11 @@
 from functools import lru_cache
 from pydantic_settings import BaseSettings
+from pydantic import ConfigDict
 
 
 class Settings(BaseSettings):
+    model_config = ConfigDict(env_file=".env")
+
     app_name: str = "ConectaTalentos"
     debug: bool = False
     secret_key: str = "dev-secret-key"
@@ -18,9 +21,6 @@ class Settings(BaseSettings):
     max_pdf_pages: int = 10
 
     presidio_language: str = "pt"
-
-    class Config:
-        env_file = ".env"
 
 
 @lru_cache()
