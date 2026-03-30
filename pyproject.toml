@@ -1,0 +1,129 @@
+[tool.ruff]
+# Compatível com Black
+line-length = 88
+target-version = "py311"
+indent-width = 4
+
+# Excluir diretórios do linting
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "*.egg-info",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint]
+# Regras ativadas
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # Pyflakes
+    "I",   # isort (ordenação de imports)
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+]
+
+# Regras ignoradas
+ignore = [
+    "E501",  # Linha muito longa (deixar Black gerenciar)
+]
+
+# Permitir auto-fix para regras específicas
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.per-file-ignores]
+# Alembic migrations: permite imports após código
+"migrations/env.py" = ["E402"]
+"migrations/versions/*.py" = ["E402"]
+
+# Arquivos de teste: permite imports não utilizados e nomes longos
+"tests/**/*.py" = ["F401", "E501"]
+"backend/tests/**/*.py" = ["F401", "E501"]
+
+[tool.ruff.lint.isort]
+# Configuração de ordenação de imports
+known-first-party = ["app", "backend"]
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+
+[tool.ruff.format]
+# Formatação compatível com Black
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # Diretórios padrão a excluir
+  \.git
+  | \.venv
+  | venv
+  | __pycache__
+  | \.pytest_cache
+  | \.mypy_cache
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+# Configuração do pytest
+testpaths = ["tests", "backend/tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--tb=short",
+]
+markers = [
+    "unit: marca teste como unitário",
+    "integration: marca teste como de integração",
+    "slow: marca teste como lento",
+]
+
+[tool.coverage.run]
+# Configuração de cobertura de código
+source = ["app", "backend/src"]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "*/__pycache__/*",
+    "*/migrations/*",
+]
+
+[tool.coverage.report]
+# Relatório de cobertura
+precision = 2
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
