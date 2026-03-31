@@ -57,9 +57,9 @@ async def visualizar_ranking(
         )
 
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=str(e)) from e
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro ao gerar ranking: {e}")
+        raise HTTPException(status_code=500, detail=f"Erro ao gerar ranking: {e}") from e
 
 
 @router.post("/{vaga_id}/gerar")
@@ -100,9 +100,9 @@ async def gerar_ranking(
         }
 
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=str(e)) from e
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro ao gerar ranking: {e}")
+        raise HTTPException(status_code=500, detail=f"Erro ao gerar ranking: {e}") from e
 
 
 @router.get("/{vaga_id}/top/{limite}")
@@ -140,8 +140,76 @@ async def obter_top_candidatos(
         }
 
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=str(e)) from e
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Erro ao obter top candidatos: {e}"
-        )
+        ) from e
+
+
+@router.get("/{vaga_id}/candidato/{curriculo_id}")
+async def obter_detalhes_candidato(
+    vaga_id: int, curriculo_id: int, db: Session = Depends(get_db)
+):
+    """Obtém detalhes completos da análise de um candidato específico.
+
+    Args:
+        vaga_id: ID da vaga
+        curriculo_id: ID do currículo do candidato
+        db: Sessão do banco de dados
+
+    Returns:
+        JSON com detalhes completos do candidato
+    """
+    try:
+        ranking_service = RankingService(db)
+
+        # Busca análise do candidato
+        analise = ranking_service.analise_repo.obter_por_curriculo(curriculo_id)
+
+        if not analise:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Análise não encontrada para o currículo {curriculo_id}",
+            )
+
+        # Busca dados do currículo
+        curriculo = ranking_service.curriculo_repo.obter_por_id(curriculo_id)
+
+        if not curriculo or curriculo.vaga_id != vaga_id:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Currículo {curriculo_id} não encontrado para a vaga {vaga_id}",
+            )
+
+        # Busca dados da vaga
+        vaga = ranking_service.vaga_repo.obter_por_id(vaga_id)
+
+        return {
+            "vaga": {
+                "id": vaga.id,
+                "titulo": vaga.titulo,
+                "descricao": vaga.descricao,
+                "requisitos": vaga.requisitos,
+            },
+            "curriculo": {
+                "id": curriculo.id,
+                "nome_arquivo": curriculo.nome_arquivo,
+                "enviado_em": curriculo.enviado_em.isoformat(),
+            },
+            "analise": {
+                "score": analise.score,
+                "justificativa": analise.justificativa,
+                "pontos_fortes": analise.pontos_fortes,
+                "gaps": analise.gaps,
+                "tokens_usados": analise.tokens_usados,
+                "analisado_em": analise.analisado_em.isoformat(),
+            },
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Erro ao obter detalhes do candidato: {e}"
+        ) from e
