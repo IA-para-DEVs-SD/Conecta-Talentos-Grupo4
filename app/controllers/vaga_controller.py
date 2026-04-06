@@ -19,17 +19,49 @@ router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
 
-@router.post("/api", response_model=VagaResponseSchema, status_code=201)
+@router.post(
+    "/api",
+    response_model=VagaResponseSchema,
+    status_code=201,
+    summary="Criar vaga",
+    responses={
+        201: {"description": "Vaga criada com sucesso"},
+        422: {"description": "Dados inválidos"},
+    },
+)
 def api_criar_vaga(dados: VagaCreateSchema, db: Session = Depends(get_db)):
+    """Cria uma nova vaga de emprego.
+
+    **Exemplo de request:**
+    ```json
+    {
+      "titulo": "Desenvolvedor Python Sênior",
+      "descricao": "Vaga para desenvolvedor backend com experiência em APIs REST.",
+      "requisitos_tecnicos": ["Python", "FastAPI", "SQLAlchemy", "Docker"],
+      "experiencia_minima": "3 anos",
+      "competencias_desejadas": ["Trabalho em equipe", "Comunicação", "Proatividade"]
+    }
+    ```
+    """
     service = VagaService(db)
     vaga = service.criar(dados)
     return _vaga_to_response(vaga)
 
 
-@router.put("/api/{vaga_id}", response_model=VagaResponseSchema)
+@router.put(
+    "/api/{vaga_id}",
+    response_model=VagaResponseSchema,
+    summary="Atualizar vaga",
+    responses={
+        200: {"description": "Vaga atualizada com sucesso"},
+        404: {"description": "Vaga não encontrada"},
+        422: {"description": "Dados inválidos"},
+    },
+)
 def api_atualizar_vaga(
     vaga_id: int, dados: VagaCreateSchema, db: Session = Depends(get_db)
 ):
+    """Atualiza todos os campos de uma vaga existente (substituição completa)."""
     service = VagaService(db)
     try:
         vaga = service.atualizar(vaga_id, dados)
@@ -42,12 +74,20 @@ def api_atualizar_vaga(
     return _vaga_to_response(vaga)
 
 
-@router.get("/api", response_model=VagaListResponseSchema)
+@router.get(
+    "/api",
+    response_model=VagaListResponseSchema,
+    summary="Listar vagas",
+    responses={
+        200: {"description": "Lista paginada de vagas"},
+    },
+)
 def api_listar_vagas(
-    pagina: int = Query(1, ge=1),
-    por_pagina: int = Query(10, ge=1, le=100),
+    pagina: int = Query(1, ge=1, description="Número da página"),
+    por_pagina: int = Query(10, ge=1, le=100, description="Itens por página (máx. 100)"),
     db: Session = Depends(get_db),
 ):
+    """Retorna lista paginada de todas as vagas cadastradas."""
     service = VagaService(db)
     vagas, total, total_paginas = service.listar_paginado(pagina, por_pagina)
     return VagaListResponseSchema(
@@ -59,8 +99,17 @@ def api_listar_vagas(
     )
 
 
-@router.get("/api/{vaga_id}", response_model=VagaResponseSchema)
+@router.get(
+    "/api/{vaga_id}",
+    response_model=VagaResponseSchema,
+    summary="Obter vaga",
+    responses={
+        200: {"description": "Dados da vaga"},
+        404: {"description": "Vaga não encontrada"},
+    },
+)
 def api_obter_vaga(vaga_id: int, db: Session = Depends(get_db)):
+    """Retorna os dados completos de uma vaga pelo ID."""
     service = VagaService(db)
     try:
         vaga = service.obter(vaga_id)
@@ -73,8 +122,17 @@ def api_obter_vaga(vaga_id: int, db: Session = Depends(get_db)):
     return _vaga_to_response(vaga)
 
 
-@router.delete("/api/{vaga_id}", status_code=204)
+@router.delete(
+    "/api/{vaga_id}",
+    status_code=204,
+    summary="Excluir vaga",
+    responses={
+        204: {"description": "Vaga excluída com sucesso"},
+        404: {"description": "Vaga não encontrada"},
+    },
+)
 def api_deletar_vaga(vaga_id: int, db: Session = Depends(get_db)):
+    """Exclui uma vaga e todos os currículos e análises associados (cascade)."""
     service = VagaService(db)
     try:
         service.deletar(vaga_id)
