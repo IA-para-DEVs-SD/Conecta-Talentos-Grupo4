@@ -44,10 +44,70 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.app_name,
     debug=settings.debug,
-    description="Sistema inteligente de ranqueamento de currículos com IA",
+    description="""
+## ConectaTalentos API
+
+Sistema inteligente de ranqueamento de currículos com IA para profissionais de RH.
+
+### Funcionalidades
+
+- **Vagas** — Cadastro e gerenciamento de vagas com requisitos técnicos
+- **Currículos** — Upload de PDFs com extração automática de texto e anonimização LGPD
+- **Ranking** — Análise e ranqueamento de candidatos via LLM (score 0–100)
+
+### Fluxo de uso
+
+1. Crie uma vaga em `POST /vagas/api`
+2. Faça upload de currículos em `POST /curriculos/api/{vaga_id}`
+3. Gere o ranking em `POST /ranking/{vaga_id}/gerar`
+4. Consulte os resultados em `GET /ranking/{vaga_id}`
+
+### Autenticação
+
+Atualmente sem autenticação. Configure `SECRET_KEY` no `.env` para uso em produção.
+
+### Códigos de erro comuns
+
+| Código | Significado |
+|--------|-------------|
+| 400 | Dados inválidos ou arquivo corrompido |
+| 404 | Recurso não encontrado |
+| 413 | Arquivo muito grande (padrão: 10 MB) |
+| 415 | Formato de arquivo não suportado |
+| 422 | Erro de validação ou PDF ilegível |
+| 429 | Limite de requisições à API de IA excedido |
+| 500 | Erro interno do servidor |
+| 502 | Erro ao comunicar com serviço de IA |
+| 504 | Timeout na análise de IA |
+""",
     version="1.0.0",
+    contact={
+        "name": "Grupo 4 — ConectaTalentos",
+        "url": "https://github.com/IA-para-DEVs-SD/Grupo-4-Conecta-Talentos",
+    },
+    license_info={
+        "name": "MIT",
+    },
     docs_url="/docs",
     redoc_url="/redoc",
+    openapi_tags=[
+        {
+            "name": "vagas",
+            "description": "Gerenciamento de vagas de emprego. Inclui criação, listagem, atualização e exclusão.",
+        },
+        {
+            "name": "curriculos",
+            "description": "Upload e gerenciamento de currículos em PDF. O texto é extraído e anonimizado automaticamente.",
+        },
+        {
+            "name": "ranking",
+            "description": "Geração e consulta de ranking de candidatos via análise por LLM.",
+        },
+        {
+            "name": "infra",
+            "description": "Endpoints de infraestrutura e monitoramento.",
+        },
+    ],
     lifespan=lifespan,
 )
 

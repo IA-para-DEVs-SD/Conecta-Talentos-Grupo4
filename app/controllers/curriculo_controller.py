@@ -17,12 +17,45 @@ router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
 
-@router.post("/api/{vaga_id}", status_code=201)
+@router.post(
+    "/api/{vaga_id}",
+    status_code=201,
+    summary="Upload de currículos",
+    responses={
+        201: {"description": "Currículos enviados com sucesso"},
+        400: {"description": "Nenhum currículo válido enviado"},
+        404: {"description": "Vaga não encontrada"},
+        413: {"description": "Arquivo muito grande"},
+        415: {"description": "Formato de arquivo inválido (apenas PDF)"},
+    },
+)
 async def api_upload_curriculos(
     vaga_id: int,
-    arquivos: list[UploadFile] = File(...),
+    arquivos: list[UploadFile] = File(..., description="Arquivos PDF dos currículos"),
     db: Session = Depends(get_db),
 ):
+    """Faz upload de um ou mais currículos em PDF para uma vaga.
+
+    O texto é extraído e anonimizado automaticamente após o upload.
+
+    **Statuses possíveis do currículo:**
+    - `pendente` — aguardando processamento
+    - `extraido` — texto extraído com sucesso
+    - `anonimizado` — texto extraído e anonimizado (LGPD)
+    - `erro_extracao` — falha na extração do PDF
+
+    **Exemplo de response:**
+    ```json
+    {
+      "enviados": 2,
+      "erros": [],
+      "curriculos": [
+        {"id": 1, "nome_arquivo": "joao_silva.pdf", "status": "anonimizado"},
+        {"id": 2, "nome_arquivo": "maria_souza.pdf", "status": "anonimizado"}
+      ]
+    }
+    ```
+    """
     from fastapi import HTTPException
 
     service = CurriculoService(db)
@@ -56,8 +89,15 @@ async def api_upload_curriculos(
     )
 
 
-@router.get("/api/{vaga_id}")
+@router.get(
+    "/api/{vaga_id}",
+    summary="Listar currículos da vaga",
+    responses={
+        200: {"description": "Lista de currículos da vaga"},
+    },
+)
 def api_listar_curriculos(vaga_id: int, db: Session = Depends(get_db)):
+    """Retorna todos os currículos enviados para uma vaga."""
     service = CurriculoService(db)
     curriculos = service.listar_por_vaga(vaga_id)
     return {
@@ -75,8 +115,17 @@ def api_listar_curriculos(vaga_id: int, db: Session = Depends(get_db)):
     }
 
 
-@router.delete("/api/{curriculo_id}", status_code=204)
+@router.delete(
+    "/api/{curriculo_id}",
+    status_code=204,
+    summary="Excluir currículo",
+    responses={
+        204: {"description": "Currículo excluído com sucesso"},
+        404: {"description": "Currículo não encontrado"},
+    },
+)
 def api_deletar_curriculo(curriculo_id: int, db: Session = Depends(get_db)):
+    """Exclui um currículo e sua análise associada (cascade)."""
     from fastapi import HTTPException
 
     service = CurriculoService(db)

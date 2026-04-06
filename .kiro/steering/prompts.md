@@ -285,3 +285,33 @@ Critérios de aceite:
 - Criação de `tests/test_anonimizador.py` com 18 testes: regex, Presidio mockado, configuração e integração no pipeline
 
 **Data:** 2026-03-30
+
+---
+
+### 10. Documentação Completa do Projeto (Swagger/OpenAPI + Guia de Instalação)
+
+**Prompt:**
+```
+Criar documentação completa do projeto: APIs com Swagger/OpenAPI e guia de instalação.
+Critérios de aceite:
+- Swagger/OpenAPI configurado com todos os endpoints documentados
+- Exemplos de request/response e códigos de erro documentados
+- Guia de instalação com pré-requisitos, passo a passo, variáveis de ambiente e troubleshooting
+```
+
+**Resultado:**
+- Atualização de `app/main.py`:
+  - Descrição rica com fluxo de uso, tabela de códigos de erro, tags por domínio e metadados de contato/licença
+  - `openapi_tags` definidos para `vagas`, `curriculos`, `ranking` e `infra`
+- Atualização de `app/controllers/vaga_controller.py`:
+  - Endpoints API (`POST`, `PUT`, `GET`, `DELETE`) com `summary`, `responses` e docstrings com exemplos de request/response
+- Atualização de `app/controllers/curriculo_controller.py`:
+  - Endpoints API documentados com sumários, códigos de resposta e descrição do ciclo de status do currículo (`pendente → extraido → anonimizado`)
+- Criação de `docs/guia-instalacao.md`:
+  - Pré-requisitos com tabela de versões
+  - Passo a passo completo: clone, venv, dependências, modelo spaCy, `.env`, diretórios, banco, execução
+  - Tabela de variáveis de ambiente (obrigatórias e opcionais com padrões)
+  - Instruções para produção (workers, observações sobre SQLite)
+  - Seção de troubleshooting com os erros mais comuns e suas soluções
+
+**Data:** 2026-04-06
